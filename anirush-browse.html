@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse — ANIRUSH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-0:#080808; --bg-1:#0D0D0D; --surface-0:#161616; --surface-1:#1F1F1F; --surface-2:#282828;
+  --line:#2A2A2A; --red:#FF1A1A; --red-dark:#7A0000; --red-glow: rgba(255,26,26,.35);
+  --text-0:#FFFFFF; --text-1:#B5B5B5; --text-2:#767676;
+  --radius-s:8px; --radius-m:12px; --radius-l:16px; --ease: cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{ background:var(--bg-0); color:var(--text-0); font-family:'Poppins',sans-serif; min-height:100vh; overflow-x:hidden; }
+::-webkit-scrollbar{height:0;width:6px;} ::-webkit-scrollbar-thumb{background:var(--surface-2); border-radius:4px;}
+a{color:inherit; text-decoration:none;} button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+.mono{font-family:'Space Mono', monospace;}
+img,svg{display:block;}
+
+/* ===================== LAYOUT ===================== */
+.app{ display:grid; grid-template-columns:240px 1fr; min-height:100vh; }
+@media (max-width: 980px){ .app{ grid-template-columns:1fr; } }
+
+/* ===================== SIDEBAR ===================== */
+.sidebar{ background:var(--bg-1); border-right:1px solid var(--line); display:flex; flex-direction:column; padding:24px 16px; position:sticky; top:0; height:100vh; }
+@media (max-width: 980px){ .sidebar{ display:none; } }
+.brand{ display:flex; align-items:center; gap:10px; padding:4px 8px 28px; }
+.brand svg{ width:34px; height:34px; flex-shrink:0; }
+.brand-text{ display:flex; flex-direction:column; line-height:1; }
+.brand-text .name{ font-weight:800; font-size:17px; letter-spacing:.5px; }
+.brand-text .name span{ color:var(--red); }
+.brand-text .tag{ font-size:8.5px; color:var(--text-2); letter-spacing:1.5px; margin-top:4px; font-weight:600;}
+.nav{ display:flex; flex-direction:column; gap:2px; flex:1; }
+.nav-item{ display:flex; align-items:center; gap:12px; padding:11px 12px; border-radius:var(--radius-s); color:var(--text-1); font-size:14px; font-weight:500; transition: background .18s var(--ease), color .18s var(--ease); }
+.nav-item svg{ width:18px; height:18px; opacity:.85; flex-shrink:0; }
+.nav-item:hover{ background:var(--surface-0); color:var(--text-0); }
+.nav-item.active{ background:linear-gradient(90deg, var(--red-glow), transparent); color:var(--text-0); position:relative; }
+.nav-item.active::before{ content:""; position:absolute; left:-16px; top:8px; bottom:8px; width:3px; background:var(--red); border-radius:0 3px 3px 0; }
+.nav-item.active svg{ opacity:1; filter:drop-shadow(0 0 6px var(--red-glow)); }
+.nav-divider{ height:1px; background:var(--line); margin:12px 4px; }
+.sidebar-rush{ margin-top:14px; padding:14px; border-radius:var(--radius-m); background:radial-gradient(120% 140% at 0% 0%, rgba(255,26,26,.14), var(--surface-0) 60%); border:1px solid var(--line); display:flex; align-items:center; gap:12px; }
+.rush-dial-mini{ position:relative; width:44px; height:44px; flex-shrink:0; }
+.rush-dial-mini svg{ width:44px; height:44px; transform:rotate(-90deg); }
+.rush-dial-mini .lvl{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; }
+.sidebar-rush-info{ line-height:1.3; min-width:0; }
+.sidebar-rush-info .title{ font-size:11.5px; font-weight:700; color:var(--text-0); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sidebar-rush-info .sub{ font-size:9.5px; color:var(--text-2); letter-spacing:.5px; }
+
+/* ===================== MOBILE BOTTOM NAV ===================== */
+.bottom-nav{ display:none; position:fixed; left:0; right:0; bottom:0; z-index:50; background:rgba(13,13,13,.9); backdrop-filter:blur(14px); border-top:1px solid var(--line); padding:8px 6px calc(8px + env(safe-area-inset-bottom)); justify-content:space-around; }
+@media (max-width:980px){ .bottom-nav{ display:flex; } main{ padding-bottom:78px; } }
+.bn-item{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 10px; border-radius:10px; color:var(--text-2); font-size:9.5px; font-weight:600; transition:color .18s var(--ease); }
+.bn-item svg{ width:20px; height:20px; }
+.bn-item.active{ color:var(--red); }
+
+/* ===================== MAIN ===================== */
+main{ padding: 22px 32px 60px; max-width:1500px; }
+@media (max-width:980px){ main{ padding:16px 16px 60px; } }
+.topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; gap:16px; }
+.mobile-brand{ display:none; align-items:center; gap:8px; }
+@media (max-width:980px){ .mobile-brand{ display:flex; } .mobile-brand svg{width:26px;height:26px;} .mobile-brand .name{font-weight:800; font-size:15px;} .mobile-brand .name span{color:var(--red);} }
+.search-bar{ flex:1; max-width:420px; display:flex; align-items:center; gap:10px; background:var(--surface-0); border:1px solid var(--line); border-radius:999px; padding:9px 16px; color:var(--text-2); font-size:13px; transition:border-color .18s var(--ease); }
+.search-bar:focus-within{ border-color:var(--red); }
+.search-bar svg{ width:15px; height:15px; opacity:.6; flex-shrink:0; }
+.search-bar input{ background:none; border:none; outline:none; color:var(--text-0); font-family:inherit; font-size:13px; width:100%; }
+.topbar-actions{ display:flex; align-items:center; gap:10px; }
+.icon-btn{ width:38px; height:38px; border-radius:999px; background:var(--surface-0); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; position:relative; transition:border-color .18s var(--ease); }
+.icon-btn:hover{ border-color:var(--surface-2); }
+.icon-btn svg{ width:16px; height:16px; }
+.icon-btn .dot{ position:absolute; top:8px; right:8px; width:6px; height:6px; border-radius:50%; background:var(--red); box-shadow:0 0 6px var(--red);}
+.avatar-btn{ width:38px; height:38px; border-radius:999px; background:linear-gradient(145deg,var(--red),var(--red-dark)); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; }
+
+/* ===================== BROWSE HEADER & FILTERS ===================== */
+.browse-header{ margin-bottom:24px; }
+.browse-header h1{ font-size:26px; font-weight:800; margin-bottom:6px; }
+.browse-header p{ font-size:13px; color:var(--text-2); }
+.filter-row{ display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
+.filter-select{ position:relative; }
+.filter-select select{ appearance:none; background:var(--surface-0); border:1px solid var(--line); color:var(--text-1); font-family:inherit; font-size:12.5px; font-weight:600; padding:10px 34px 10px 14px; border-radius:8px; cursor:pointer; transition:border-color .18s var(--ease); }
+.filter-select select:hover{ border-color:var(--surface-2); }
+.filter-select select:focus{ outline:none; border-color:var(--red); }
+.filter-select::after{ content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--text-2); pointer-events:none; font-size:12px; }
+
+/* ===================== ANIME GRID ===================== */
+.anime-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:16px; }
+@media (max-width:500px){ .anime-grid{ grid-template-columns:repeat(2, 1fr); } }
+.grid-card{ position:relative; cursor:pointer; transition:transform .18s var(--ease); }
+.grid-card:hover{ transform:translateY(-4px); }
+.grid-card .poster{ position:relative; width:100%; aspect-ratio:2/3; border-radius:var(--radius-m); overflow:hidden; background:var(--surface-1); border:1px solid var(--line); margin-bottom:8px; }
+.grid-card .poster .fade{ position:absolute; inset:0; background:linear-gradient(180deg, transparent 45%, rgba(0,0,0,.75) 100%); }
+.grid-card .poster .qbadge{ position:absolute; right:7px; top:7px; font-size:9px; font-weight:800; padding:3px 6px; border-radius:4px; background:rgba(0,0,0,.55); border:1px solid rgba(255,255,255,.15); backdrop-filter:blur(3px); }
+.grid-card .poster .rate{ position:absolute; left:8px; bottom:8px; display:flex; align-items:center; gap:3px; font-size:10.5px; font-weight:700; color:#FFC24B; }
+.grid-card .poster .rate svg{ width:10px; height:10px; }
+.grid-card .poster .ep-pill{ position:absolute; right:8px; bottom:8px; font-size:9px; font-weight:700; color:var(--text-1); }
+.grid-card .poster .new-tag{ position:absolute; left:7px; top:7px; font-size:9px; font-weight:800; letter-spacing:.5px; padding:3px 7px; border-radius:4px; background:var(--red); color:#fff; }
+.grid-card .title{ font-size:12.5px; font-weight:600; color:var(--text-0); line-height:1.35; margin-bottom:3px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.grid-card .sub{ font-size:10.5px; color:var(--text-2); }
+.grid-card .coming-soon{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; background:linear-gradient(160deg, var(--surface-1), var(--surface-0)); }
+.grid-card .coming-soon .label{ font-size:10px; font-weight:800; letter-spacing:1.5px; color:var(--text-2); }
+.grid-card .coming-soon .notify-btn{ font-size:10.5px; font-weight:700; padding:6px 12px; border-radius:999px; border:1px solid var(--red); color:var(--red); transition:all .18s var(--ease); }
+.grid-card .coming-soon .notify-btn:hover{ background:var(--red); color:#fff; }
+
+/* ===================== EMPTY STATE ===================== */
+.empty-state{ text-align:center; padding:60px 20px; color:var(--text-2); }
+.empty-state .icon{ width:60px; height:60px; margin:0 auto 16px; opacity:.4; }
+.empty-state h3{ font-size:16px; color:var(--text-1); margin-bottom:6px; }
+.empty-state p{ font-size:13px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M8 16 L4 4 L16 12 Z" fill="#FF1A1A"/>
+        <path d="M40 16 L44 4 L32 12 Z" fill="#FF1A1A"/>
+        <path d="M24 8 C13 8 7 16 7 25 C7 35 14.5 41 24 41 C33.5 41 41 35 41 25 C41 16 35 8 24 8 Z" fill="#161616" stroke="#FF1A1A" stroke-width="1.4"/>
+        <path d="M14 24 L20 27 L14 30" stroke="#FF1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M34 24 L28 27 L34 30" stroke="#FF1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <path d="M20 34 Q24 37 28 34" stroke="#FF1A1A" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </svg>
+      <div class="brand-text">
+        <div class="name">ANI<span>RUSH</span></div>
+        <div class="tag">WATCH · RUSH · REPEAT</div>
+      </div>
+    </div>
+
+    <nav class="nav" id="nav">
+      <a class="nav-item" data-icon="home">Home</a>
+      <a class="nav-item active" data-icon="browse">Browse</a>
+      <a class="nav-item" data-icon="watching">Watching</a>
+      <a class="nav-item" data-icon="fav">Favorites</a>
+      <div class="nav-divider"></div>
+      <a class="nav-item" data-icon="profile">Profile</a>
+      <a class="nav-item" data-icon="settings">Settings</a>
+      <a class="nav-item" data-icon="premium">Premium</a>
+      <a class="nav-item" data-icon="support">Support Anirush</a>
+    </nav>
+
+    <div class="sidebar-rush">
+      <div class="rush-dial-mini">
+        <svg viewBox="0 0 44 44">
+          <circle cx="22" cy="22" r="18" fill="none" stroke="#282828" stroke-width="4"/>
+          <circle cx="22" cy="22" r="18" fill="none" stroke="#FF1A1A" stroke-width="4" stroke-linecap="round" stroke-dasharray="113" stroke-dashoffset="30"/>
+        </svg>
+        <div class="lvl">18</div>
+      </div>
+      <div class="sidebar-rush-info">
+        <div class="title">Inferno Watcher</div>
+        <div class="sub mono">8,420 / 10,000 XP</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main>
+    <div class="topbar">
+      <div class="mobile-brand">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M8 16 L4 4 L16 12 Z" fill="#FF1A1A"/>
+          <path d="M40 16 L44 4 L32 12 Z" fill="#FF1A1A"/>
+          <path d="M24 8 C13 8 7 16 7 25 C7 35 14.5 41 24 41 C33.5 41 41 35 41 25 C41 16 35 8 24 8 Z" fill="#161616" stroke="#FF1A1A" stroke-width="1.4"/>
+          <path d="M14 24 L20 27 L14 30" stroke="#FF1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M34 24 L28 27 L34 30" stroke="#FF1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="name">ANI<span>RUSH</span></div>
+      </div>
+
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Cari judul anime...">
+      </div>
+
+      <div class="topbar-actions">
+        <button class="icon-btn"><span class="dot"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+        <div class="avatar-btn">RY</div>
+      </div>
+    </div>
+
+    <div class="browse-header">
+      <h1>Browse Anime</h1>
+      <p>Temukan anime favoritmu, saring berdasarkan genre, status, dan tipe.</p>
+      <div class="filter-row" id="filterRow">
+        <div class="filter-select">
+          <select id="filterType">
+            <option value="all">All Types</option>
+            <option value="series">Series</option>
+            <option value="movie">Movie</option>
+          </select>
+        </div>
+        <div class="filter-select">
+          <select id="filterSeason">
+            <option value="all">All Seasons</option>
+            <option value="1">Season 1</option>
+            <option value="2">Season 2</option>
+            <option value="3">Season 3</option>
+            <option value="final">Final Season</option>
+          </select>
+        </div>
+        <div class="filter-select">
+          <select id="filterGenre">
+            <option value="all">All Genres</option>
+            <option value="action">Action</option>
+            <option value="dark-fantasy">Dark Fantasy</option>
+            <option value="supernatural">Supernatural</option>
+            <option value="sci-fi">Sci-Fi</option>
+            <option value="shounen">Shounen</option>
+            <option value="historical">Historical</option>
+            <option value="psychological">Psychological</option>
+          </select>
+        </div>
+        <div class="filter-select">
+          <select id="filterStatus">
+            <option value="all">All Status</option>
+            <option value="ongoing">Ongoing</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="anime-grid" id="animeGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <h3>No results found</h3>
+      <p>Coba ubah filter atau kata kunci pencarian.</p>
+    </div>
+  </main>
+</div>
+
+<nav class="bottom-nav">
+  <a class="bn-item" href="anirush-home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home</a>
+  <a class="bn-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Browse</a>
+  <a class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>Watching</a>
+  <a class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>Favorites</a>
+  <a class="bn-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+</nav>
+
+<script src="script.js"></script>
+</body>
+</html>
