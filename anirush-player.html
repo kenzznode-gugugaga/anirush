@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kagerou no Yami — EP 12 — ANIRUSH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* same CSS as original player */
+:root{
+  --bg-0:#080808; --bg-1:#0D0D0D; --surface-0:#161616; --surface-1:#1F1F1F; --surface-2:#282828;
+  --line:#2A2A2A; --red:#FF1A1A; --red-dark:#7A0000; --red-glow: rgba(255,26,26,.35);
+  --text-0:#FFFFFF; --text-1:#B5B5B5; --text-2:#767676;
+  --radius-s:8px; --radius-m:12px; --radius-l:16px; --ease: cubic-bezier(.4,0,.2,1);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:var(--bg-0); color:var(--text-0); font-family:'Poppins',sans-serif;}
+a{color:inherit; text-decoration:none;} button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+.mono{font-family:'Space Mono',monospace;}
+::-webkit-scrollbar{height:0;width:6px;} ::-webkit-scrollbar-thumb{background:var(--surface-2); border-radius:4px;}
+.topnav{ display:flex; align-items:center; justify-content:space-between; padding:14px 28px; border-bottom:1px solid var(--line); }
+.back{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; color:var(--text-1); }
+.back:hover{ color:#fff; }
+.brand{ display:flex; align-items:center; gap:8px; }
+.brand svg{width:24px;height:24px;} .brand .name{font-weight:800; font-size:14px;} .brand .name span{color:var(--red);}
+.ep-crumb{ font-size:12px; color:var(--text-2); }
+.ep-crumb b{ color:var(--text-1); }
+.layout{ display:grid; grid-template-columns:1fr 320px; gap:0; }
+@media (max-width:980px){ .layout{ grid-template-columns:1fr; } }
+.player-wrap{ padding:24px 28px 0; }
+@media (max-width:700px){ .player-wrap{ padding:0; } }
+.player{ position:relative; width:100%; aspect-ratio:16/9; border-radius:var(--radius-l); overflow:hidden; background: radial-gradient(70% 100% at 50% 40%, rgba(255,26,26,.10), transparent 60%), linear-gradient(150deg,#1a0d0d,#0a0a0a); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; }
+@media (max-width:700px){ .player{ border-radius:0; border:none; } }
+.play-center{ width:76px; height:76px; border-radius:50%; background:rgba(255,26,26,.15); border:1.5px solid var(--red); display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); transition:transform .18s var(--ease), background .18s var(--ease); }
+.play-center:hover{ transform:scale(1.06); background:rgba(255,26,26,.25); }
+.play-center svg{ width:28px; height:28px; margin-left:3px; }
+.skip-intro{ position:absolute; right:20px; bottom:78px; background:rgba(20,20,20,.85); border:1px solid var(--line); backdrop-filter:blur(8px); padding:10px 16px; border-radius:8px; font-size:12px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.skip-intro:hover{ border-color:var(--red); color:var(--red); }
+.skip-intro svg{ width:13px; height:13px; }
+@media (max-width:700px){ .skip-intro{ bottom:66px; right:12px; padding:8px 12px; font-size:11px; } }
+.resume-toast{ position:absolute; left:20px; top:20px; background:rgba(20,20,20,.85); border:1px solid var(--line); backdrop-filter:blur(8px); padding:9px 14px; border-radius:8px; font-size:11.5px; color:var(--text-1); display:flex; align-items:center; gap:8px; }
+.resume-toast b{ color:#fff; }
+.controls{ position:absolute; left:0; right:0; bottom:0; padding:10px 16px 12px; background:linear-gradient(0deg, rgba(0,0,0,.75), transparent); }
+.timeline{ height:4px; border-radius:99px; background:rgba(255,255,255,.2); margin-bottom:10px; position:relative; cursor:pointer; }
+.timeline i{ position:absolute; left:0; top:0; bottom:0; width:38%; background:var(--red); border-radius:99px; }
+.timeline .knob{ position:absolute; left:38%; top:50%; transform:translate(-50%,-50%); width:11px; height:11px; border-radius:50%; background:var(--red); box-shadow:0 0 6px var(--red-glow); }
+.ctrl-row{ display:flex; align-items:center; justify-content:space-between; }
+.ctrl-left, .ctrl-right{ display:flex; align-items:center; gap:14px; }
+.ctrl-btn{ display:flex; align-items:center; justify-content:center; opacity:.9; transition:opacity .15s var(--ease); }
+.ctrl-btn:hover{ opacity:1; }
+.ctrl-btn svg{ width:18px; height:18px; }
+.time-txt{ font-size:11.5px; color:var(--text-1); font-family:'Space Mono',monospace; }
+.vol-row{ display:flex; align-items:center; gap:6px; }
+.vol-bar{ width:60px; height:3px; border-radius:99px; background:rgba(255,255,255,.25); position:relative; }
+.vol-bar i{ position:absolute; left:0; top:0; bottom:0; width:70%; background:#fff; border-radius:99px; }
+.qbtn{ font-size:11px; font-weight:700; border:1px solid rgba(255,255,255,.2); padding:5px 10px; border-radius:6px; }
+.qbtn:hover{ border-color:var(--red); color:var(--red); }
+.autonext-toggle{ display:flex; align-items:center; gap:7px; font-size:11px; color:var(--text-1); font-weight:600; }
+.switch{ width:32px; height:18px; border-radius:99px; background:var(--red); position:relative; }
+.switch i{ position:absolute; top:2px; right:2px; width:14px; height:14px; border-radius:50%; background:#fff; }
+.below{ padding:20px 28px 40px; }
+@media (max-width:700px){ .below{ padding:16px; } }
+.ep-title-row{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; gap:12px; flex-wrap:wrap; }
+.ep-title-row h1{ font-size:19px; font-weight:800; }
+.ep-nav-btns{ display:flex; gap:8px; }
+.navbtn{ display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; padding:9px 14px; border-radius:8px; background:var(--surface-0); border:1px solid var(--line); }
+.navbtn:hover{ border-color:var(--surface-2); }
+.navbtn svg{ width:13px; height:13px; }
+.ep-desc{ font-size:12.5px; color:var(--text-2); margin-bottom:20px; }
+.next-up{ display:flex; gap:14px; align-items:center; background:var(--surface-0); border:1px solid var(--line); border-radius:var(--radius-m); padding:14px; margin-bottom:26px; }
+.next-thumb{ width:96px; height:64px; border-radius:var(--radius-s); flex-shrink:0; background:linear-gradient(150deg,#5a1414,#0f0f0f); position:relative; overflow:hidden; }
+.next-thumb .ring{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.next-thumb svg{ width:34px; height:34px; }
+.next-info{ flex:1; min-width:0; }
+.next-info .lbl{ font-size:9.5px; letter-spacing:1.5px; color:var(--text-2); font-weight:700; margin-bottom:3px; }
+.next-info .t{ font-size:13px; font-weight:700; }
+.countdown{ font-family:'Space Mono',monospace; font-size:20px; font-weight:700; color:var(--red); flex-shrink:0; }
+.side{ border-left:1px solid var(--line); padding:24px 20px; max-height:calc(100vh); overflow-y:auto; }
+@media (max-width:980px){ .side{ border-left:none; border-top:1px solid var(--line); max-height:none; } }
+.side h3{ font-size:13px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+.mini-ep{ display:flex; align-items:center; gap:10px; padding:9px 8px; border-radius:var(--radius-s); margin-bottom:3px; transition:background .15s var(--ease); }
+.mini-ep:hover{ background:var(--surface-0); }
+.mini-ep.current{ background:rgba(255,26,26,.1); border:1px solid rgba(255,26,26,.3); }
+.mini-thumb{ width:52px; height:36px; border-radius:6px; flex-shrink:0; background:linear-gradient(150deg,#3a0a12,#111); position:relative; }
+.mini-ep.current .mini-thumb::after{ content:"▶"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; color:var(--red); }
+.mini-body{ min-width:0; }
+.mini-title{ font-size:11.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mini-sub{ font-size:10px; color:var(--text-2); }
+.mini-ep.current .mini-title{ color:var(--red); }
+.comment-input{ display:flex; gap:12px; margin-bottom:22px; align-items:flex-start; }
+.c-avatar{ width:34px; height:34px; border-radius:50%; background:linear-gradient(145deg,var(--red),var(--red-dark)); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:11px; }
+.c-input-box{ flex:1; background:var(--surface-0); border:1px solid var(--line); border-radius:var(--radius-m); padding:12px 14px; }
+.c-input-box textarea{ width:100%; background:none; border:none; outline:none; color:#fff; font-family:inherit; font-size:13px; resize:none; }
+.c-input-actions{ display:flex; justify-content:flex-end; margin-top:8px; }
+.c-post-btn{ font-size:12px; font-weight:700; padding:8px 16px; border-radius:8px; background:var(--red); color:#fff; }
+.section-title{ font-size:15px; font-weight:700; margin-bottom:16px; }
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a class="back" id="backBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg> Kagerou no Yami</a>
+  <div class="brand">
+    <svg viewBox="0 0 48 48" fill="none">
+      <path d="M8 16 L4 4 L16 12 Z" fill="#FF1A1A"/><path d="M40 16 L44 4 L32 12 Z" fill="#FF1A1A"/>
+      <path d="M24 8 C13 8 7 16 7 25 C7 35 14.5 41 24 41 C33.5 41 41 35 41 25 C41 16 35 8 24 8 Z" fill="#161616" stroke="#FF1A1A" stroke-width="1.4"/>
+      <path d="M14 24 L20 27 L14 30" stroke="#FF1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M34 24 L28 27 L34 30" stroke="#FF1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </svg>
+    <div class="name">ANI<span>RUSH</span></div>
+  </div>
+  <div class="ep-crumb">S1 · <b>EP 12</b> / 24</div>
+</div>
+
+<div class="layout">
+  <div>
+    <div class="player-wrap">
+      <div class="player" id="player">
+        <div class="resume-toast">▶ Melanjutkan dari <b>14:32</b></div>
+        <button class="play-center" id="playBtn"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></button>
+        <button class="skip-intro"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg> Skip Intro</button>
+        <div class="controls">
+          <div class="timeline"><i></i><div class="knob"></div></div>
+          <div class="ctrl-row">
+            <div class="ctrl-left">
+              <button class="ctrl-btn" id="playPauseBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+              <div class="vol-row">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
+                <div class="vol-bar" id="volBar"><i></i></div>
+              </div>
+              <span class="time-txt" id="timeTxt">14:32 / 24:44</span>
+            </div>
+            <div class="ctrl-right">
+              <div class="autonext-toggle" id="autoNextToggle">Auto Next <div class="switch"><i></i></div></div>
+              <button class="qbtn" id="qbtn">1080p</button>
+              <button class="ctrl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1z"/></svg></button>
+              <button class="ctrl-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="below">
+      <div class="ep-title-row">
+        <h1 id="epTitle">EP 12 — Kagerou</h1>
+        <div class="ep-nav-btns">
+          <button class="navbtn" id="prevBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg> Prev</button>
+          <button class="navbtn" id="nextBtn">Next <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+      </div>
+      <div class="ep-desc" id="epDesc">Kagerou no Yami · Season 1 · 24:44 · Diunggah 3 hari lalu</div>
+
+      <div class="next-up">
+        <div class="next-thumb"><div class="ring"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" opacity="0.7"><path d="M8 5v14l11-7z" fill="#fff" stroke="none"/></svg></div></div>
+        <div class="next-info">
+          <div class="lbl">UP NEXT</div>
+          <div class="t" id="nextTitle">EP 13 — Fajar Berdarah</div>
+        </div>
+        <div class="countdown mono" id="countdown">08</div>
+      </div>
+
+      <div class="section-title">Comments <span class="mono" style="font-size:12px;color:var(--text-2);font-weight:400;">(96)</span></div>
+      <div class="comment-input">
+        <div class="c-avatar">RY</div>
+        <div class="c-input-box">
+          <textarea rows="1" id="commentInput" placeholder="Komentar episode ini..."></textarea>
+          <div class="c-input-actions"><button class="c-post-btn" id="postCommentBtn">Post</button></div>
+        </div>
+      </div>
+      <div id="commentList"></div>
+    </div>
+  </div>
+
+  <aside class="side">
+    <h3>📺 Episodes — Season 1</h3>
+    <div id="miniList"></div>
+  </aside>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
