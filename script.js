@@ -567,3 +567,160 @@ if (isPlayer) {
   // --- Initialize timeline ---
   updateTimeline();
 }
+
+// ============================================================
+// BROWSE PAGE
+// ============================================================
+const isBrowse = !!document.getElementById('animeGrid');
+if (isBrowse) {
+  // --- Navigation sidebar ---
+  const navItems = document.querySelectorAll('.nav-item');
+  const navIcons = {
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>',
+    browse: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>',
+    watching: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+    fav: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
+    profile: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1z"/></svg>',
+    premium: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9-6.2-3.3-6.2 3.3 1.2-6.9-5-4.9 6.9-1z"/></svg>',
+    support: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>'
+  };
+  navItems.forEach(item => {
+    const key = item.getAttribute('data-icon');
+    const text = item.textContent.trim();
+    item.innerHTML = navIcons[key] + ' ' + text;
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      navItems.forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+      if (text === 'Home') window.location.href = 'anirush-home.html';
+      else if (text === 'Browse') window.scrollTo(0,0);
+      else alert('Halaman ' + text + ' belum dibuat (simulasi)');
+    });
+  });
+
+  // --- Mobile bottom nav ---
+  document.querySelectorAll('.bn-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      const href = item.getAttribute('href');
+      if (href) window.location.href = href;
+      else e.preventDefault();
+    });
+  });
+
+  // --- Data anime (mock) ---
+  const animeList = [
+    { title: 'Kagerou no Yami', genre: 'Dark Fantasy', rating: 8.9, ep: '24 Ep', quality: '1080p', type: 'series', season: '2', status: 'ongoing' },
+    { title: 'Crimson Fang Chronicle', genre: 'Action', rating: 8.6, ep: '12 Ep', quality: '1080p', type: 'series', season: '1', status: 'ongoing' },
+    { title: 'Voidwalker Century', genre: 'Sci-Fi', rating: 8.4, ep: '18 Ep', quality: '720p', type: 'series', season: '1', status: 'ongoing' },
+    { title: 'Nightbound Requiem', genre: 'Supernatural', rating: 9.1, ep: '09 Ep', quality: '1080p', type: 'series', season: '1', status: 'ongoing' },
+    { title: 'Ashfall Genesis', genre: 'Shounen', rating: 8.2, ep: '30 Ep', quality: '1080p', type: 'series', season: '1', status: 'completed' },
+    { title: 'Ronin Zero', genre: 'Historical', rating: 8.7, ep: '15 Ep', quality: '720p', type: 'series', season: '1', status: 'ongoing' },
+    { title: 'Ember Prince', genre: 'Fantasy', rating: 8.3, ep: '21 Ep', quality: '1080p', type: 'series', season: '1', status: 'completed' },
+    { title: 'Hollow Static', genre: 'Psychological', rating: 8.8, ep: '11 Ep', quality: '1080p', type: 'series', season: '1', status: 'ongoing' },
+    { title: 'Wraith Circuit', genre: 'Cyberpunk', rating: 8.5, ep: '14 Ep', quality: '1080p', type: 'series', season: '1', status: 'ongoing' },
+    { title: 'Solstice Blade', genre: 'Adventure', rating: 8.1, ep: '26 Ep', quality: '720p', type: 'series', season: '2', status: 'completed' },
+    { title: 'Onyx Requiem', genre: 'Dark Fantasy', rating: 8.9, ep: '08 Ep', quality: '1080p', type: 'movie', season: '-', status: 'completed' },
+    { title: 'Iron Lotus', genre: 'Action', rating: 8.0, ep: '19 Ep', quality: '480p', type: 'series', season: '1', status: 'completed' },
+    { title: 'Pale Ember', genre: 'Romance', rating: 7.9, ep: '13 Ep', quality: '720p', type: 'series', season: '1', status: 'ongoing' },
+    { title: 'Kagerou: Eternal Dusk', genre: 'Dark Fantasy', rating: 9.0, ep: 'Movie', quality: '1080p', type: 'movie', season: '-', status: 'completed' },
+    { title: 'Crimson Fang: Origins', genre: 'Action', rating: 8.7, ep: 'Movie', quality: '1080p', type: 'movie', season: '-', status: 'completed' },
+    { title: 'Thornveil Saga', genre: 'Dark Fantasy', rating: null, ep: 'Coming Soon', quality: '-', type: 'series', season: '1', status: 'upcoming' },
+    { title: 'Glasswing Order', genre: 'Fantasy', rating: null, ep: 'Coming Soon', quality: '-', type: 'series', season: '1', status: 'upcoming' }
+  ];
+
+  const grid = document.getElementById('animeGrid');
+  const emptyState = document.getElementById('emptyState');
+
+  function renderGrid(list) {
+    if (list.length === 0) {
+      grid.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
+    emptyState.style.display = 'none';
+    grid.innerHTML = list.map(cardHTML).join('');
+    attachGridListeners();
+  }
+
+  function cardHTML(anime) {
+    if (anime.status === 'upcoming') {
+      return `<div class="grid-card" data-title="${anime.title}">
+        <div class="poster">
+          <div class="coming-soon">
+            <div class="label">COMING SOON</div>
+            <button class="notify-btn" onclick="event.stopPropagation(); alert('Notifikasi untuk ${anime.title} telah diaktifkan!')">Notify Me</button>
+          </div>
+        </div>
+        <div class="title">${anime.title}</div>
+        <div class="sub">${anime.genre} · TBA</div>
+      </div>`;
+    }
+    const bg = `linear-gradient(150deg, ${anime.title.length % 2 ? '#5a1414' : '#3a0a12'}, #0f0f0f)`;
+    return `<div class="grid-card" data-title="${anime.title}">
+      <div class="poster" style="background:${bg}">
+        <div class="fade"></div>
+        ${anime.quality !== '-' ? `<div class="qbadge">${anime.quality}</div>` : ''}
+        ${anime.rating ? `<div class="rate"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg> ${anime.rating}</div>` : ''}
+        <div class="ep-pill">${anime.ep}</div>
+      </div>
+      <div class="title">${anime.title}</div>
+      <div class="sub">${anime.genre} · ${anime.season !== '-' ? 'S'+anime.season : 'Movie'}</div>
+    </div>`;
+  }
+
+  function attachGridListeners() {
+    document.querySelectorAll('.grid-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const title = card.getAttribute('data-title');
+        window.location.href = `anirush-detail.html?title=${encodeURIComponent(title)}`;
+      });
+    });
+  }
+
+  // --- Filter logic ---
+  const searchInput = document.getElementById('searchInput');
+  const typeSelect = document.getElementById('filterType');
+  const seasonSelect = document.getElementById('filterSeason');
+  const genreSelect = document.getElementById('filterGenre');
+  const statusSelect = document.getElementById('filterStatus');
+
+  function applyFilters() {
+    const q = searchInput.value.toLowerCase().trim();
+    const type = typeSelect.value;
+    const season = seasonSelect.value;
+    const genre = genreSelect.value;
+    const status = statusSelect.value;
+
+    const filtered = animeList.filter(anime => {
+      // search
+      if (q && !anime.title.toLowerCase().includes(q)) return false;
+      // type
+      if (type !== 'all' && anime.type !== type) return false;
+      // season
+      if (season !== 'all') {
+        if (anime.season === '-') return false;
+        if (season === 'final' && anime.season !== 'final') return false;
+        if (season !== 'final' && anime.season !== season) return false;
+      }
+      // genre (case-insensitive, partial match)
+      if (genre !== 'all' && !anime.genre.toLowerCase().includes(genre.replace(/-/g, ' '))) return false;
+      // status
+      if (status !== 'all') {
+        if (status === 'ongoing' && anime.status !== 'ongoing') return false;
+        if (status === 'completed' && anime.status !== 'completed') return false;
+      }
+      return true;
+    });
+    renderGrid(filtered);
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  typeSelect.addEventListener('change', applyFilters);
+  seasonSelect.addEventListener('change', applyFilters);
+  genreSelect.addEventListener('change', applyFilters);
+  statusSelect.addEventListener('change', applyFilters);
+
+  // Initial render
+  renderGrid(animeList);
+}
